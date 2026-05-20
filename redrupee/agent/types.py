@@ -88,9 +88,19 @@ class AgentContext:
         self.audit_log.append(message)
 
     def record(self, result: ToolResult) -> None:
-        """Append a tool result to the running list and audit it."""
+        """Append a tool result to the running list and audit it.
+
+        Used by the orchestrator after every tool call. Stores the
+        result so later tools can retrieve it via get_result, and
+        writes a clean line to the audit log.
+        """
         self.tool_results.append(result)
-        self.audit_log.append(f"{result.tool_name}: success={result.success} verified={result.verified_source}")
+        self.audit_log.append(
+            f"{result.tool_name}: success={result.success} "
+            f"verified={result.verified_source}"
+        )
+
+    
 
     def get_result(self, tool_name: str) -> ToolResult | None:
         """Retrieve a previous tool result by name. Returns None if not found."""

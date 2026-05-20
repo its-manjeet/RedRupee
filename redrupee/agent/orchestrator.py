@@ -15,28 +15,22 @@ Order matters:
 """
 
 from redrupee.agent.types import AgentContext, LoanApplication, ToolResult
-from redrupee.agent.tools import (
-    income_verification_tool,
-    credit_bureau_tool,
-    employment_verification_tool,
-    foir_calculation_tool,
-    decision_engine_tool,
-)
+from redrupee.agent import tools
 
 def run_agent(application: LoanApplication) -> ToolResult:
     """Runs the full loan eligibility pipeline on one application."""
     ctx = AgentContext(application=application)
 
     # Step 1: independent verification tools
-    ctx.record(income_verification_tool(ctx))
-    ctx.record(credit_bureau_tool(ctx))
-    ctx.record(employment_verification_tool(ctx))
+    ctx.record(tools.income_verification_tool(ctx))
+    ctx.record(tools.credit_bureau_tool(ctx))
+    ctx.record(tools.employment_verification_tool(ctx))
 
     # Step 2: derived calculation
-    ctx.record(foir_calculation_tool(ctx))
+    ctx.record(tools.foir_calculation_tool(ctx))
 
     # Step 3: final decision
-    final_result = decision_engine_tool(ctx)
+    final_result = tools.decision_engine_tool(ctx)
     ctx.record(final_result)
 
     return final_result
